@@ -111,6 +111,8 @@ module Sprockets
       unless environment
         raise Error, "manifest requires environment for compilation"
       end
+      logger.info "FUCK!"
+      logger.info "start to compile manifest"
 
       paths = environment.each_logical_path(*args).to_a +
         args.flatten.select { |fn| Pathname.new(fn).absolute? if fn.is_a?(String)}
@@ -128,7 +130,7 @@ module Sprockets
           target = File.join(dir, asset.digest_path)
 
           if File.exist?(target)
-            logger.debug "Skipping #{target}, already exists"
+            logger.info "Skipping #{target}, already exists"
           else
             logger.info "Writing #{target}"
             asset.write_to target
@@ -207,10 +209,11 @@ module Sprockets
       # Basic wrapper around Environment#find_asset. Logs compile time.
       def find_asset(logical_path)
         asset = nil
+        logger.info "Start to compile #{logical_path}"
         ms = benchmark do
           asset = environment.find_asset(logical_path)
         end
-        logger.debug "Compiled #{logical_path}  (#{ms}ms)"
+        logger.info "Compiled #{logical_path}  (#{ms}ms)"
         asset
       end
 
